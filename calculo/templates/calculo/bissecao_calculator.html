@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>💖 Calculadora Método da Bisseção</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --barbie-pink: #E0218A;
+            --barbie-pink-light: #FF69B4;
+            --barbie-pink-hot: #FF1493;
+            --barbie-purple: #C154C1;
+            --barbie-purple-light: #DA70D6;
+            --barbie-blue: #00D4FF;
+            --barbie-yellow: #FFD700;
+            --barbie-white: #FFF5F8;
+            --barbie-shadow: rgba(224, 33, 138, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes sparkle-twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        @keyframes hearts-rise {
+            0% { opacity: 0; transform: translateY(100vh) rotate(0deg); }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; transform: translateY(-100px) rotate(360deg); }
+        }
+
+        @keyframes hearts-blink {
+            0%, 100% { opacity: 0; transform: scale(0.8) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1.2) rotate(15deg); }
+        }
+
+        body {
+            margin: 0;
+            padding: 20px 0 40px;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #E0218A, #E91E8C, #FF1493, #E0218A, #C154C1, #E0218A);
+            background-size: 400% 400%;
+            animation: gradient-shift 15s ease infinite;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,165.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') repeat-x;
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        nav {
+            width: 90%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 18px 0;
+            margin-bottom: 25px;
+            text-align: center;
+            border-radius: 30px;
+            box-shadow: 0 8px 32px var(--barbie-shadow),
+                        inset 0 0 20px rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 20px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            transform: scale(1.1);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            width: 90%;
+            padding: 40px 35px;
+            border-radius: 35px;
+            box-shadow: 0 20px 60px var(--barbie-shadow),
+                        0 0 80px rgba(255, 105, 180, 0.2),
+                        inset 0 0 40px rgba(255, 255, 255, 0.1);
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            animation: float 6s ease-in-out infinite;
+            position: relative;
+            z-index: 5;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            border-radius: 35px;
+            z-index: -1;
+            animation: shimmer 3s infinite;
+        }
+
+        h1 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 36px;
+            font-weight: 800;
+            text-shadow: 4px 4px 8px rgba(224, 33, 138, 0.5),
+                         0 0 30px rgba(255, 255, 255, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        form div {
+            display: flex;
+            flex-direction: column;
+            width: fit-content;
+            max-width: 100%;
+            min-width: 240px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #fff;
+            font-size: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            white-space: nowrap;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--barbie-pink);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1),
+                        inset 0 2px 5px rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            border-color: var(--barbie-yellow);
+            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.3),
+                        0 8px 20px rgba(0, 0, 0, 0.15);
+            outline: none;
+            transform: translateY(-2px);
+        }
+
+        input[type="submit"] {
+            background: linear-gradient(135deg, var(--barbie-pink) 0%, var(--barbie-purple) 50%, var(--barbie-pink-hot) 100%);
+            background-size: 200% 200%;
+            color: white;
+            padding: 16px 20px;
+            width: 100%;
+            border: none;
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px var(--barbie-shadow),
+                        0 0 40px rgba(255, 105, 180, 0.3),
+                        inset 0 2px 10px rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            grid-column: 1 / -1;
+            margin-top: 10px;
+        }
+
+        input[type="submit"]::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        input[type="submit"]:hover::before {
+            left: 100%;
+        }
+
+        input[type="submit"]:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 40px var(--barbie-shadow),
+                        0 0 60px rgba(255, 105, 180, 0.5);
+            background-position: 100% 0;
+        }
+
+        input[type="submit"]:active {
+            transform: translateY(-1px) scale(1);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(20px);
+            font-size: 15px;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2),
+                        inset 0 0 20px rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .result h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .result p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .error {
+            background: rgba(255, 0, 100, 0.3);
+            border-left: 6px solid #FF0066;
+            border-radius: 25px;
+        }
+
+        .success {
+            background: rgba(0, 255, 150, 0.2);
+            border-left: 6px solid #00FF96;
+            border-radius: 25px;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(15px);
+            border-left: 6px solid var(--barbie-yellow);
+            padding: 18px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #1a1a1a;
+            font-weight: 500;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15),
+                        inset 0 0 15px rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+        }
+
+        .info-box strong {
+            color: var(--barbie-pink);
+            font-weight: 700;
+            text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+        }
+
+        code {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            color: var(--barbie-pink);
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid rgba(255, 255, 255, 0.4);
+            margin: 20px 0;
+        }
+
+        .barbie-logo-small {
+            width: 160px;
+            max-width: 60%;
+            margin: 0 auto 20px;
+            display: block;
+            animation: float 4s ease-in-out infinite, pulse 3s ease-in-out infinite;
+            filter: drop-shadow(0 10px 25px rgba(224, 33, 138, 0.5))
+                    drop-shadow(0 0 30px rgba(255, 105, 180, 0.6));
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 20px;
+            animation: hearts-rise 10s linear infinite;
+            opacity: 0;
+        }
+
+        .heart-blink {
+            position: absolute;
+            font-size: 25px;
+            color: var(--barbie-pink-light);
+            animation: hearts-blink 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px var(--barbie-pink-light));
+        }
+
+        .sparkle-element {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, var(--barbie-yellow), transparent);
+            border-radius: 50%;
+            animation: sparkle-twinkle 3s ease-in-out infinite;
+            box-shadow: 0 0 10px var(--barbie-yellow);
+        }
+
+        .easter-egg-creature {
+            position: fixed !important;
+            bottom: -150px;
+            right: -150px;
+            width: 60px;
+            height: 60px;
+            z-index: 999999 !important;
+            pointer-events: none;
+            opacity: 0;
+            display: block !important;
+        }
+
+        .easter-egg-creature.active {
+            animation: toasty-appear 0.8s ease-out forwards !important;
+        }
+
+        @keyframes toasty-appear {
+            0% {
+                bottom: -150px;
+                right: -150px;
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            15% {
+                bottom: 20px;
+                right: 20px;
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            20% {
+                transform: scale(1);
+            }
+            75% {
+                bottom: 20px;
+                right: 20px;
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                bottom: -150px;
+                right: -150px;
+                opacity: 0;
+                transform: scale(0.3);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 28px; }
+            .container { padding: 30px 25px; }
+            input[type="submit"] { font-size: 18px; }
+            .barbie-logo-small { width: 120px; }
+        }
+    </style>
+</head>
+<body>
+        <div class="floating-hearts">
+        <div class="heart-blink" style="left: 8%; top: 15%; animation-delay: 0s;">💖</div>
+        <div class="heart-blink" style="left: 22%; top: 25%; animation-delay: 1s;">💕</div>
+        <div class="heart-blink" style="left: 38%; top: 45%; animation-delay: 2s;">💗</div>
+        <div class="heart-blink" style="left: 52%; top: 35%; animation-delay: 0.5s;">💖</div>
+        <div class="heart-blink" style="left: 68%; top: 55%; animation-delay: 1.5s;">💕</div>
+        <div class="heart-blink" style="left: 82%; top: 65%; animation-delay: 2.5s;">💗</div>
+        <div class="heart-blink" style="left: 12%; top: 75%; animation-delay: 1.2s;">💖</div>
+        <div class="heart-blink" style="left: 28%; top: 85%; animation-delay: 0.8s;">💕</div>
+        <div class="heart-blink" style="left: 48%; top: 20%; animation-delay: 1.8s;">💗</div>
+        <div class="heart-blink" style="left: 62%; top: 10%; animation-delay: 2.2s;">💖</div>
+        <div class="heart-blink" style="left: 78%; top: 30%; animation-delay: 0.3s;">💕</div>
+        <div class="heart-blink" style="left: 92%; top: 50%; animation-delay: 1.3s;">💗</div>
+        <div class="heart-blink" style="left: 18%; top: 60%; animation-delay: 2.8s;">💖</div>
+        <div class="heart-blink" style="left: 42%; top: 70%; animation-delay: 0.7s;">💕</div>
+        <div class="heart-blink" style="left: 58%; top: 80%; animation-delay: 1.9s;">💗</div>
+        <div class="heart-blink" style="left: 72%; top: 40%; animation-delay: 2.4s;">💖</div>
+        <div class="heart-blink" style="left: 88%; top: 90%; animation-delay: 0.9s;">💕</div>
+        <div class="heart-blink" style="left: 5%; top: 50%; animation-delay: 2.1s;">💗</div>
+        <div class="heart-blink" style="left: 95%; top: 75%; animation-delay: 1.6s;">💖</div>
+        <div class="heart-blink" style="left: 32%; top: 12%; animation-delay: 2.7s;">💕</div>
+        
+        <div class="sparkle-element" style="left: 20%; top: 30%; animation-delay: 0.5s;"></div>
+        <div class="sparkle-element" style="left: 40%; top: 50%; animation-delay: 1.5s;"></div>
+        <div class="sparkle-element" style="left: 60%; top: 70%; animation-delay: 2.5s;"></div>
+        <div class="sparkle-element" style="left: 80%; top: 40%; animation-delay: 1s;"></div>
+    </div>
+
+    <nav>
+        <a href="{% url 'home_calculo' %}">Início</a>
+        <a href="{% url 'bissecao_calculator' %}">Bisseção</a>
+        <a href="{% url 'newton_calculator' %}">Newton-Raphson</a>
+        <a href="{% url 'gauss_calculator' %}">Eliminação de Gauss</a>
+    </nav>
+
+    <div class="container">
+        <img src="{% load static %}{% static 'Barbie_Logo.svg.png' %}" alt="Barbie" class="barbie-logo-small">
+        <h1>Calculadora Método da Bisseção</h1>
+
+        <div class="info-box">
+            <p><strong>O que este cálculo faz:</strong> aplica o método da bisseção para encontrar uma raiz real de <code>f(x)</code> dentro de um intervalo <code>[a, b]</code>.</p>
+            <p><strong>Como preencher:</strong></p>
+            <ul>
+                <li><strong>f(x)</strong>: escreva a função usando <code>x</code> (ex.: <code>x**3 - x - 2</code>).</li>
+                <li><strong>Intervalo [a, b]</strong>: escolha valores com sinais opostos para <code>f(a)</code> e <code>f(b)</code> (ex.: <code>a = 1.0</code>, <code>b = 2.0</code>).</li>
+                <li><strong>Tolerância</strong>: precisão desejada para a raiz (ex.: <code>1e-5</code>).</li>
+                <li><strong>Máx. iterações</strong>: limite de iterações para interromper o cálculo se necessário (ex.: <code>100</code>).</li>
+            </ul>
+            <p><strong>Funções suportadas</strong>: <code>sin</code>, <code>cos</code>, <code>exp</code>, <code>log</code> (ln), <code>sqrt</code> e operações aritméticas. Use <code>**</code> para potência e <code>*</code> para multiplicação.</p>
+            <p><strong>Exemplo rápido:</strong> <code>f(x) = x**3 - x - 2</code>, intervalo <code>[1.0, 2.0]</code>, tolerância <code>1e-5</code>.</p>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div>
+                <label for="funcao_str">f(x):</label>
+                <input type="text" id="funcao_str" name="funcao_str" value="{{ form_data.funcao_str|default:'x**3 - x - 2' }}" required>
+            </div>
+            <div>
+                <label for="a_str">a:</label>
+                <input type="text" id="a_str" name="a_str" value="{{ form_data.a_str|default:'1.0' }}" required>
+            </div>
+            <div>
+                <label for="b_str">b:</label>
+                <input type="text" id="b_str" name="b_str" value="{{ form_data.b_str|default:'2.0' }}" required>
+            </div>
+            <div>
+                <label for="erro_str">ε (ex: 0.00001 ou 1e-5):</label>
+                <input type="text" id="erro_str" name="erro_str" value="{{ form_data.erro_str|default:'1e-5' }}" required>
+            </div>
+            <div>
+                <label for="max_iter_str">K:</label>
+                <input type="number" id="max_iter_str" name="max_iter_str" value="{{ form_data.max_iter_str|default:'100' }}" min="1" step="1" required>
+            </div>
+            <input type="submit" value="Calcular">
+        </form>
+
+        {% if erro_input %}
+            <div class="result error">
+                <h3>Erro na Entrada de Dados:</h3>
+                <p>{{ erro_input }}</p>
+            </div>
+        {% endif %}
+
+        {% if erro_sympy %}
+            <div class="result error">
+                <h3>Erro na Expressão da Função ou Cálculo:</h3>
+                <p>{{ erro_sympy }}</p>
+            </div>
+        {% endif %}
+
+        {% if resultado %}
+            <div class="result {% if resultado.raiz is not None and not erro_input and not erro_sympy %}success{% elif not erro_input and not erro_sympy %}error{% endif %}">
+                <h3>Resultado do Cálculo (Bisseção):</h3>
+                {% if resultado.raiz is not None %}
+                    <p><strong>Raiz encontrada:</strong> <code>{{ resultado.raiz|stringformat:".10f" }}</code></p>
+                    <p><strong>f(raiz):</strong> <code>{{ resultado.f_na_raiz|stringformat:".10e" }}</code></p>
+                    {% if resultado.erro_calculado is not None %}
+                        <p><strong>Erro relativo:</strong> <code>{{ resultado.erro_calculado|stringformat:".10e" }}</code></p>
+                    {% endif %}
+                {% else %}
+                    <p><strong>Não foi possível encontrar a raiz com os parâmetros fornecidos.</strong></p>
+                {% endif %}
+                <p><strong>Iterações realizadas:</strong> {{ resultado.iteracoes }}</p>
+                <p><strong>Mensagem do sistema:</strong> {{ resultado.mensagem }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Easter Egg fora do container -->
+    <img src="{% load static %}{% static 'bixin-barbie.png' %}" alt="Easter Egg" class="easter-egg-creature" id="easterEgg" onerror="console.error('Erro ao carregar imagem do easter egg')">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const submitButton = document.querySelector('input[type="submit"]');
+            const easterEgg = document.getElementById('easterEgg');
+            
+            console.log('Easter Egg element:', easterEgg);
+            console.log('Submit button:', submitButton);
+            
+            if (submitButton) {
+                submitButton.addEventListener('click', function(e) {
+                    console.log('Button clicked! Triggering easter egg...');
+                    
+                    // Ativar animação estilo "Toasty!" do Mortal Kombat
+                    easterEgg.classList.remove('active');
+                    void easterEgg.offsetWidth; // Force reflow
+                    easterEgg.classList.add('active');
+                    
+                    console.log('Easter egg class added:', easterEgg.className);
+                    
+                    // A página vai recarregar, mas o usuário verá o início da animação
+                });
+            } else {
+                console.error('Botão de submit não encontrado!');
+            }
+            
+            // Salvar no sessionStorage que o easter egg deve aparecer
+            if (submitButton) {
+                submitButton.addEventListener('click', function() {
+                    sessionStorage.setItem('showEasterEgg', 'true');
+                });
+            }
+            
+            // Verificar se deve mostrar o easter egg ao carregar a página (após submit)
+            if (sessionStorage.getItem('showEasterEgg') === 'true') {
+                sessionStorage.removeItem('showEasterEgg');
+                console.log('Mostrando easter egg após reload...');
+                
+                setTimeout(function() {
+                    easterEgg.classList.add('active');
+                    setTimeout(function() {
+                        easterEgg.classList.remove('active');
+                    }, 800);
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>

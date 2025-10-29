@@ -1,0 +1,6 @@
+asgiref==3.8.1
+Django==5.2.1
+mpmath==1.3.0
+sqlparse==0.5.3
+sympy==1.14.0
+tzdata==2025.2

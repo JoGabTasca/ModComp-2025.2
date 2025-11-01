@@ -34,7 +34,7 @@ def gauss_somente(A, b, mostrar_passos=True, cond_limite=1e5):
                 print(f"✅ Sistema bem condicionado (cond(A) = {cond:.2f}).")
 
             print("\n✅ Sistema quadrado e não singular — aplicando Eliminação de Gauss.")
-            return eliminacao_de_gauss_completa(A, b, mostrar_passos)
+            return eliminacao_gauss(A, b, mostrar_passos)
 
     # CASO 2️: MATRIZ NÃO QUADRADA
     else:
@@ -49,7 +49,7 @@ def gauss_somente(A, b, mostrar_passos=True, cond_limite=1e5):
             return None
 
 
-def eliminacao_de_gauss_completa(A, b, mostrar_passos=False):
+def eliminacao_gauss(A, b, mostrar_passos=False):
     """
     🔹 Implementação da Eliminação de Gauss com pivoteamento total.
     (Usada apenas em sistemas quadrados e não singulares)

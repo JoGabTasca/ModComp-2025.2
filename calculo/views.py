@@ -324,7 +324,7 @@ def gauss_calculator_view(request):
         metodo_alternativo = request.POST.get('metodo_alternativo') 
 
         try:
-            # 2. USA OS NOVOS PARSERS (feitos para o formato da print)
+            
             A = _parse_gauss_matriz(matriz_str)
             b = _parse_gauss_vetor(termos_str)
 
@@ -349,8 +349,7 @@ def gauss_calculator_view(request):
             else:
                 resultado_dict = gauss_somente_web(A, b) # Tenta Gauss como padrão
 
-            # 4. ENVIA DADOS LIMPOS PARA O HTML
-            # (O HTML corrigido vai ler 'solucao' e 'mensagem')
+    
             context['solucao'] = resultado_dict.get('solucao')
             context['mensagem'] = resultado_dict.get('mensagem')
             

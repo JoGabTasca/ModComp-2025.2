@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>💚 Calculadora Eliminação de Gauss</title>
+    <title>💖 Calculadora Eliminação de Gauss</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -43,6 +43,22 @@
         @keyframes hearts-blink {
             0%, 100% { opacity: 0; transform: scale(0.8) rotate(0deg); }
             50% { opacity: 1; transform: scale(1.2) rotate(15deg); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) skewX(-20deg); }
+            100% { transform: translateX(200%) skewX(-20deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         body {
@@ -85,7 +101,7 @@
             text-align: center;
             border-radius: 30px;
             box-shadow: 0 8px 32px var(--barbie-shadow),
-                        inset 0 0 20px rgba(255, 255, 255, 0.1);
+                          inset 0 0 20px rgba(255, 255, 255, 0.1);
             border: 2px solid rgba(255, 255, 255, 0.3);
             position: relative;
             z-index: 10;
@@ -111,11 +127,12 @@
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
             width: 90%;
+            max-width: 800px;
             padding: 40px 35px;
             border-radius: 35px;
             box-shadow: 0 20px 60px var(--barbie-shadow),
-                        0 0 80px rgba(255, 105, 180, 0.2),
-                        inset 0 0 40px rgba(255, 255, 255, 0.1);
+                          0 0 80px rgba(255, 105, 180, 0.2),
+                          inset 0 0 40px rgba(255, 255, 255, 0.1);
             border: 3px solid rgba(255, 255, 255, 0.4);
             animation: float 6s ease-in-out infinite;
             position: relative;
@@ -156,9 +173,6 @@
         form div {
             display: flex;
             flex-direction: column;
-            width: fit-content;
-            max-width: 100%;
-            min-width: 240px;
         }
 
         label {
@@ -183,7 +197,7 @@
             font-family: 'Poppins', sans-serif;
             font-weight: 500;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1),
-                        inset 0 2px 5px rgba(255, 255, 255, 0.5);
+                          inset 0 2px 5px rgba(255, 255, 255, 0.5);
             transition: all 0.3s ease;
         }
 
@@ -191,7 +205,7 @@
         input[type="number"]:focus {
             border-color: var(--barbie-yellow);
             box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.3),
-                        0 8px 20px rgba(0, 0, 0, 0.15);
+                         0 8px 20px rgba(0, 0, 0, 0.15);
             outline: none;
             transform: translateY(-2px);
         }
@@ -210,14 +224,33 @@
             cursor: pointer;
             transition: all 0.4s ease;
             box-shadow: 0 10px 30px var(--barbie-shadow),
-                        0 0 40px rgba(255, 105, 180, 0.3),
-                        inset 0 2px 10px rgba(255, 255, 255, 0.3);
+                          0 0 40px rgba(255, 105, 180, 0.3),
+                          inset 0 2px 10px rgba(255, 255, 255, 0.3);
             border: 2px solid rgba(255, 255, 255, 0.5);
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
             grid-column: 1 / -1;
             margin-top: 10px;
+        }
+        
+        .alternative-button {
+            background: linear-gradient(135deg, var(--barbie-blue), var(--barbie-purple-light));
+            color: white;
+            padding: 12px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            width: 100%;
+        }
+        .alternative-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
         }
 
         input[type="submit"]::before {
@@ -238,7 +271,7 @@
         input[type="submit"]:hover {
             transform: translateY(-3px) scale(1.02);
             box-shadow: 0 15px 40px var(--barbie-shadow),
-                        0 0 60px rgba(255, 105, 180, 0.5);
+                         0 0 60px rgba(255, 105, 180, 0.5);
             background-position: 100% 0;
         }
 
@@ -255,7 +288,7 @@
             font-size: 15px;
             color: #fff;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2),
-                        inset 0 0 20px rgba(255, 255, 255, 0.1);
+                          inset 0 0 20px rgba(255, 255, 255, 0.1);
             border: 2px solid rgba(255, 255, 255, 0.4);
             animation: float 4s ease-in-out infinite;
         }
@@ -267,16 +300,38 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .result p {
+        .result p, .result pre {
             margin: 10px 0;
             line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .result .solucao-final {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--barbie-white);
+            background: rgba(0,0,0,0.1);
+            padding: 10px;
+            border-radius: 10px;
+            word-wrap: break-word;
         }
 
         .error {
             background: rgba(255, 0, 100, 0.3);
             border-left: 6px solid #FF0066;
             border-radius: 25px;
+            color: var(--barbie-white);
         }
+        .error h3 {
+            color: var(--barbie-white);
+            text-shadow: 2px 2px 4px rgba(100, 0, 0, 0.5);
+        }
+        .error p, .error pre {
+             color: var(--barbie-white);
+        }
+
 
         .success {
             background: rgba(0, 255, 150, 0.2);
@@ -295,7 +350,7 @@
             color: #1a1a1a;
             font-weight: 500;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15),
-                        inset 0 0 15px rgba(255, 255, 255, 0.2);
+                          inset 0 0 15px rgba(255, 255, 255, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.4);
             text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
         }
@@ -310,6 +365,7 @@
             color: #1a1a1a;
             font-weight: 600;
             margin: 8px 0;
+            white-space: pre-wrap;
         }
 
         code {
@@ -338,41 +394,10 @@
                     drop-shadow(0 0 30px rgba(255, 105, 180, 0.6));
         }
 
-        .floating-hearts {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        .floating-hearts, .sparkle-element, .heart-blink {
             pointer-events: none;
-            z-index: 1;
         }
-
-        .floating-heart {
-            position: absolute;
-            font-size: 20px;
-            animation: hearts-rise 10s linear infinite;
-            opacity: 0;
-        }
-
-        .heart-blink {
-            position: absolute;
-            font-size: 25px;
-            color: #00FF96;
-            animation: hearts-blink 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 10px #00FF96);
-        }
-
-        .sparkle-element {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: radial-gradient(circle, var(--barbie-yellow), transparent);
-            border-radius: 50%;
-            animation: sparkle-twinkle 3s ease-in-out infinite;
-            box-shadow: 0 0 10px var(--barbie-yellow);
-        }
-
+        
         .easter-egg-creature {
             position: fixed !important;
             bottom: -150px;
@@ -424,36 +449,12 @@
             .container { padding: 30px 25px; }
             input[type="submit"] { font-size: 18px; }
             .barbie-logo-small { width: 120px; }
+            form { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="floating-hearts">
-        <div class="heart-blink" style="left: 8%; top: 15%; animation-delay: 0s;">💖</div>
-        <div class="heart-blink" style="left: 22%; top: 25%; animation-delay: 1s;">💕</div>
-        <div class="heart-blink" style="left: 38%; top: 45%; animation-delay: 2s;">💗</div>
-        <div class="heart-blink" style="left: 52%; top: 35%; animation-delay: 0.5s;">💖</div>
-        <div class="heart-blink" style="left: 68%; top: 55%; animation-delay: 1.5s;">💕</div>
-        <div class="heart-blink" style="left: 82%; top: 65%; animation-delay: 2.5s;">💗</div>
-        <div class="heart-blink" style="left: 12%; top: 75%; animation-delay: 1.2s;">💖</div>
-        <div class="heart-blink" style="left: 28%; top: 85%; animation-delay: 0.8s;">💕</div>
-        <div class="heart-blink" style="left: 48%; top: 20%; animation-delay: 1.8s;">💗</div>
-        <div class="heart-blink" style="left: 62%; top: 10%; animation-delay: 2.2s;">💖</div>
-        <div class="heart-blink" style="left: 78%; top: 30%; animation-delay: 0.3s;">💕</div>
-        <div class="heart-blink" style="left: 92%; top: 50%; animation-delay: 1.3s;">💗</div>
-        <div class="heart-blink" style="left: 18%; top: 60%; animation-delay: 2.8s;">💖</div>
-        <div class="heart-blink" style="left: 42%; top: 70%; animation-delay: 0.7s;">💕</div>
-        <div class="heart-blink" style="left: 58%; top: 80%; animation-delay: 1.9s;">💗</div>
-        <div class="heart-blink" style="left: 72%; top: 40%; animation-delay: 2.4s;">💖</div>
-        <div class="heart-blink" style="left: 88%; top: 90%; animation-delay: 0.9s;">💕</div>
-        <div class="heart-blink" style="left: 5%; top: 50%; animation-delay: 2.1s;">💗</div>
-        <div class="heart-blink" style="left: 95%; top: 75%; animation-delay: 1.6s;">💖</div>
-        <div class="heart-blink" style="left: 32%; top: 12%; animation-delay: 2.7s;">💕</div>
-        
-        <div class="sparkle-element" style="left: 20%; top: 30%; animation-delay: 0.5s;"></div>
-        <div class="sparkle-element" style="left: 40%; top: 50%; animation-delay: 1.5s;"></div>
-        <div class="sparkle-element" style="left: 60%; top: 70%; animation-delay: 2.5s;"></div>
-        <div class="sparkle-element" style="left: 80%; top: 40%; animation-delay: 1s;"></div>
     </div>
 
     <nav>
@@ -464,7 +465,8 @@
     </nav>
 
     <div class="container">
-        <img src="{% load static %}{% static 'Barbie_Logo.svg.png' %}" alt="Barbie" class="barbie-logo-small">
+        {% load static %}
+        <img src="{% static 'Barbie_Logo.svg.png' %}" alt="Barbie" class="barbie-logo-small">
         <h1>Calculadora Método da Eliminação de Gauss</h1>
 
         <div class="info-box">
@@ -500,85 +502,82 @@ ou
                 <input type="text" id="vetor" name="vetor" value="{{ form_data.vetor|default:'' }}" required>
             </div>
             <input type="submit" value="Calcular">
+
+            {% if sugerir_svd or sugerir_mq %}
+            <div style="grid-column: 1 / -1; text-align: center; margin-top: -10px;">
+                <button type="submit" name="metodo_alternativo" value="{% if sugerir_svd %}svd{% else %}mq{% endif %}" class="alternative-button">
+                    Tentar com {% if sugerir_svd %}SVD{% else %}Mínimos Quadrados{% endif %}
+                </button>
+            </div>
+            {% endif %}
         </form>
 
         {% if erro_input %}
             <div class="result error">
                 <h3>Erro na Entrada de Dados:</h3>
-                <p>{{ erro_input }}</p>
+                <pre>{{ erro_input }}</pre>
             </div>
         {% endif %}
 
-        {% if erro_sympy %}
+        {% if solucao %}
+            <div class="result success">
+                <h3>Solução Encontrada:</h3>
+                
+                <p class="solucao-final">x = [
+                    {% for val in solucao %}
+                        {{ val|floatformat:6 }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                ]</p>
+                
+                <hr>
+                <pre>{{ mensagem }}</pre> 
+            </div>
+        {% endif %}
+
+        {% if mensagem and not solucao and not erro_input %}
             <div class="result error">
-                <h3>Erro na Expressão da Função ou Cálculo:</h3>
-                <p>{{ erro_sympy }}</p>
+                <h3>Mensagem do Sistema:</h3>
+                <pre>{{ mensagem }}</pre>
             </div>
         {% endif %}
 
-        {% if resultado %}
-            <div class="result {% if resultado.raiz is not None and not erro_input and not erro_sympy %}success{% elif not erro_input and not erro_sympy %}error{% endif %}">
-                <h3>Resultado da Bisseção:</h3>
-                {% if resultado.raiz is not None %}
-                    <p><strong>Raiz Aproximada:</strong> {{ resultado.raiz }}</p>
-                    <p><strong>f(raiz):</strong> {{ resultado.f_raiz }}</p>
-                    <p><strong>Número de Iterações:</strong> {{ resultado.iteracoes }}</p>
-                    <p><strong>Erro Estimado:</strong> {{ resultado.erro_estimado }}</p>
-                {% else %}
-                    <p>{{ resultado.mensagem }}</p>
-                {% endif %}
-            </div>
-        {% endif %}
     </div>
 
-    <!-- Easter Egg fora do container -->
-    <img src="{% load static %}{% static 'bixin-barbie.png' %}" alt="Easter Egg" class="easter-egg-creature" id="easterEgg" onerror="console.error('Erro ao carregar imagem do easter egg')">
+    {% load static %}
+    <img src="{% static 'bixin-barbie.png' %}" alt="Easter Egg" class="easter-egg-creature" id="easterEgg" onerror="console.error('Erro ao carregar imagem do easter egg')">
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const submitButton = document.querySelector('input[type="submit"]');
             const easterEgg = document.getElementById('easterEgg');
             
-            console.log('Easter Egg element:', easterEgg);
-            console.log('Submit button:', submitButton);
-            
             if (submitButton) {
                 submitButton.addEventListener('click', function(e) {
-                    console.log('Button clicked! Triggering easter egg...');
-                    
-                    // Ativar animação estilo "Toasty!" do Mortal Kombat
-                    easterEgg.classList.remove('active');
-                    void easterEgg.offsetWidth; // Force reflow
-                    easterEgg.classList.add('active');
-                    
-                    console.log('Easter egg class added:', easterEgg.className);
-                    
-                    // A página vai recarregar, mas o usuário verá o início da animação
-                });
-            } else {
-                console.error('Botão de submit não encontrado!');
-            }
-            
-            // Salvar no sessionStorage que o easter egg deve aparecer
-            if (submitButton) {
-                submitButton.addEventListener('click', function() {
                     sessionStorage.setItem('showEasterEgg', 'true');
                 });
             }
             
-            // Verificar se deve mostrar o easter egg ao carregar a página (após submit)
             if (sessionStorage.getItem('showEasterEgg') === 'true') {
                 sessionStorage.removeItem('showEasterEgg');
-                console.log('Mostrando easter egg após reload...');
                 
                 setTimeout(function() {
-                    easterEgg.classList.add('active');
-                    setTimeout(function() {
-                        easterEgg.classList.remove('active');
-                    }, 800);
+                    if (easterEgg) {
+                        easterEgg.classList.add('active');
+                        setTimeout(function() {
+                            easterEgg.classList.remove('active');
+                        }, 800); 
+                    }
                 }, 100);
             }
+
+            const altButtons = document.querySelectorAll('.alternative-button');
+            altButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    sessionStorage.setItem('showEasterEgg', 'true');
+                });
+            });
         });
     </script>
 </body>
 </html>
+

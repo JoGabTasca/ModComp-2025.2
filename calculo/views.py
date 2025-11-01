@@ -1,10 +1,13 @@
-# calculo/views.py
 from django.shortcuts import render
 import sympy
 from sympy.core.expr import Expr
 from .bissecao_method import metodo_bissecao
 from .newton_method import newton_raphson
-from .gauss_method import gauss_somente
+from .gauss_method import gauss_somente_web, resolver_por_svd_web, resolver_por_minimos_quadrados_web
+import numpy as np 
+import re 
+
+
 
 def home_calculo_view(request):
     """
@@ -257,12 +260,109 @@ def bissecao_calculator_view(request):
             
     return render(request, 'calculo/bissecao_calculator.html', context)
 
+
+# Gauss
+
+def _parse_gauss_matriz(matriz_str: str) -> list:
+    """ Analisa o formato: '1 2 3; 4 5 6' """
+    A = []
+    if not matriz_str:
+        return A
+    
+    # Remove colchetes, substitui vírgulas por espaços
+    matriz_str_limpa = matriz_str.strip().strip('[]')
+    
+    # Divide as linhas pelo ';'
+    linhas = matriz_str_limpa.split(';')
+    
+    for linha_str in linhas:
+        linha_limpa = linha_str.strip()
+        if not linha_limpa:
+            continue
+        
+        # Substitui vírgulas por espaços e divide pelos espaços
+        valores = re.split(r'[,\s]+', linha_limpa)
+        linha_float = [float(val) for val in valores if val.strip()]
+        
+        if linha_float:
+            A.append(linha_float)
+    return A
+
+def _parse_gauss_vetor(vetor_str: str) -> list:
+    """ Analisa o formato: '3,4,2' OU '3 4 2' """
+    if not vetor_str:
+        return []
+    
+    # Remove colchetes, substitui vírgulas E ponto-e-vírgula por espaços
+    vetor_limpo = vetor_str.strip().strip('[]')
+    valores = re.split(r'[;,\s]+', vetor_limpo) # Divide por ';', ',' ou ' '
+    
+    b = [float(val) for val in valores if val.strip()]
+    return b
+
 def gauss_calculator_view(request):
     context = {
-        'form_data': { #valores padrão para o formulário na primeira carga
-            'matriz_str': '2 1 -1\n-3 -1 2\n-2 1 2',
-            'termos_str': '8\n-11\n-3',
+        'form_data': { 
+            'tamanho_matriz': '3x3',
+            'matriz': '2 1 -1; -3 -1 2; -2 1 2', # Formato da print
+            'vetor': '8, -11, -3',             # Formato da print
         }
     }
+
+    if request.method == 'POST':
+        # 1. Pega os dados usando os 'name' 
+        tamanho_matriz_str = request.POST.get('tamanho_matriz', '').strip()
+        matriz_str = request.POST.get('matriz', '').strip()
+        termos_str = request.POST.get('vetor', '').strip()
+        
+        context['form_data'] = {
+            'tamanho_matriz': tamanho_matriz_str,
+            'matriz': matriz_str,
+            'vetor': termos_str,
+        }
+        
+        metodo_alternativo = request.POST.get('metodo_alternativo') 
+
+        try:
+            # 2. USA OS NOVOS PARSERS (feitos para o formato da print)
+            A = _parse_gauss_matriz(matriz_str)
+            b = _parse_gauss_vetor(termos_str)
+
+            if not A or not b:
+                raise ValueError("Matriz A ou vetor b estão vazios.")
+
+            if len(A) != len(b):
+                raise ValueError(f"O número de linhas da matriz ({len(A)}) é diferente do número de termos no vetor b ({len(b)}).")
+            
+            if A:
+                num_colunas = len(A[0])
+                for i, linha in enumerate(A):
+                    if len(linha) != num_colunas:
+                        raise ValueError(f"A linha {i+1} da matriz tem {len(linha)} colunas, mas a primeira linha tem {num_colunas}.")
+
+            # 3. CHAMA A FUNÇÃO DE CÁLCULO
+            resultado_dict = {}
+            if metodo_alternativo == 'svd':
+                resultado_dict = resolver_por_svd_web(A, b)
+            elif metodo_alternativo == 'mq':
+                 resultado_dict = resolver_por_minimos_quadrados_web(A, b)
+            else:
+                resultado_dict = gauss_somente_web(A, b) # Tenta Gauss como padrão
+
+            # 4. ENVIA DADOS LIMPOS PARA O HTML
+            # (O HTML corrigido vai ler 'solucao' e 'mensagem')
+            context['solucao'] = resultado_dict.get('solucao')
+            context['mensagem'] = resultado_dict.get('mensagem')
+            
+            # Sugestões para métodos alternativos
+            if resultado_dict.get('status') == 'singular':
+                context['sugerir_svd'] = True
+            elif resultado_dict.get('status') == 'nao_quadrado':
+                context['sugerir_mq'] = True
+
+        except ValueError as e:
+            context['erro_input'] = str(e) # Erro de formato
+        except Exception as e:
+            context['erro_input'] = f"Ocorreu um erro inesperado: {e}"
 
     return render(request, 'calculo/gauss_calculator.html', context)

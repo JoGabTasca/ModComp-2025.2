@@ -4,7 +4,7 @@ import sympy
 from sympy.core.expr import Expr
 from .bissecao_method import metodo_bissecao
 from .newton_method import newton_raphson
-from .gauss_method import eliminacao_gauss
+from .gauss_method import gauss_somente
 
 def home_calculo_view(request):
     """

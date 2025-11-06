@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>💎 Calculadora Newton-Raphson</title>
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap">
+    <link rel="stylesheet" href="{% static 'css/newton_calculator.css' %}">
+</head>
+
+<body>
+    <div class="floating-hearts">
+        <div class="heart-blink" style="left: 8%; top: 15%; animation-delay: 0s;">💖</div>
+        <div class="heart-blink" style="left: 22%; top: 25%; animation-delay: 1s;">💕</div>
+        <div class="heart-blink" style="left: 38%; top: 45%; animation-delay: 2s;">💗</div>
+        <div class="heart-blink" style="left: 52%; top: 35%; animation-delay: 0.5s;">💖</div>
+        <div class="heart-blink" style="left: 68%; top: 55%; animation-delay: 1.5s;">💕</div>
+        <div class="heart-blink" style="left: 82%; top: 65%; animation-delay: 2.5s;">💗</div>
+        <div class="heart-blink" style="left: 12%; top: 75%; animation-delay: 1.2s;">💖</div>
+        <div class="heart-blink" style="left: 28%; top: 85%; animation-delay: 0.8s;">💕</div>
+        <div class="heart-blink" style="left: 48%; top: 20%; animation-delay: 1.8s;">💗</div>
+        <div class="heart-blink" style="left: 62%; top: 10%; animation-delay: 2.2s;">💖</div>
+        <div class="heart-blink" style="left: 78%; top: 30%; animation-delay: 0.3s;">💕</div>
+        <div class="heart-blink" style="left: 92%; top: 50%; animation-delay: 1.3s;">💗</div>
+        <div class="heart-blink" style="left: 18%; top: 60%; animation-delay: 2.8s;">💖</div>
+        <div class="heart-blink" style="left: 42%; top: 70%; animation-delay: 0.7s;">💕</div>
+        <div class="heart-blink" style="left: 58%; top: 80%; animation-delay: 1.9s;">💗</div>
+        <div class="heart-blink" style="left: 72%; top: 40%; animation-delay: 2.4s;">💖</div>
+        <div class="heart-blink" style="left: 88%; top: 90%; animation-delay: 0.9s;">💕</div>
+        <div class="heart-blink" style="left: 5%; top: 50%; animation-delay: 2.1s;">💗</div>
+        <div class="heart-blink" style="left: 95%; top: 75%; animation-delay: 1.6s;">💖</div>
+        <div class="heart-blink" style="left: 32%; top: 12%; animation-delay: 2.7s;">💕</div>
+
+        <div class="sparkle-element" style="left: 20%; top: 30%; animation-delay: 0.5s;"></div>
+        <div class="sparkle-element" style="left: 40%; top: 50%; animation-delay: 1.5s;"></div>
+        <div class="sparkle-element" style="left: 60%; top: 70%; animation-delay: 2.5s;"></div>
+        <div class="sparkle-element" style="left: 80%; top: 40%; animation-delay: 1s;"></div>
+    </div>
+
+    <nav>
+        <a href="{% url 'home_calculo' %}">Início</a>
+        <a href="{% url 'bissecao_calculator' %}">Bisseção</a>
+        <a href="{% url 'newton_calculator' %}">Newton-Raphson</a>
+        <a href="{% url 'gauss_calculator' %}">Eliminação de Gauss</a>
+    </nav>
+
+    <div class="container">
+        <img src="{% load static %}{% static 'Barbie_Logo.svg.png' %}" alt="Barbie" class="barbie-logo-small">
+        <h1>Calculadora Newton-Raphson</h1>
+
+        <div class="info-box">
+            <p><strong>O que este cálculo faz:</strong> encontra uma raiz de <code>f(x)</code> usando o método de
+                Newton-Raphson
+                a partir de uma estimativa inicial.</p>
+            <p><strong>Como preencher os campos:</strong></p>
+            <ul>
+                <li><strong>f(x)</strong>: escreva a função em termos de <code>x</code>. Use <code>**</code> para
+                    potência
+                    (ex.:
+                    <code>x**2 - 4</code>) e <code>*</code> para multiplicação (ex.: <code>3*x</code>).
+                </li>
+                <li><strong>Estimativa inicial (x₀)</strong>: um valor numérico próximo da raiz esperada (ex.:
+                    <code>1.0</code>).
+                </li>
+                <li><strong>Tolerância</strong>: critério de parada (ex.: <code>1e-7</code> ou <code>0.00001</code>); o
+                    algoritmo
+                    para quando a mudança é menor que isso.</li>
+                <li><strong>Máx. iterações</strong>: limite de tentativas para evitar loops (ex.: <code>100</code>).
+                </li>
+            </ul>
+            <p><strong>Funções suportadas</strong>: <code>sin</code>, <code>cos</code>, <code>tan</code>,
+                <code>exp</code>,
+                <code>log</code> (ln), <code>sqrt</code> e operações aritméticas básicas.
+            </p>
+            <p><strong>Exemplo rápido:</strong> <code>f(x) = x**2 - 4</code>, <code>x₀ = 1.0</code>,
+                <code>tolerância = 1e-7</code>. Espera-se encontrar raiz ≈ <code>2.0</code>.
+            </p>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div>
+                <label for="funcao_str">f(x):</label>
+                <input type="text" id="funcao_str" name="funcao_str"
+                    value="{{ form_data.funcao_str|default:'x**2 - 4' }}" required>
+            </div>
+            <div>
+                <label for="x0_str">x₀:</label>
+                <input type="text" id="x0_str" name="x0_str" value="{{ form_data.x0_str|default:'1.0' }}" required>
+            </div>
+            <div>
+                <label for="erro_str">ε (ex: 0.00001 ou 1e-5):</label>
+                <input type="text" id="erro_str" name="erro_str" value="{{ form_data.erro_str|default:'1e-7' }}"
+                    required>
+            </div>
+            <div>
+                <label for="max_iter_str">K:</label>
+                <input type="number" id="max_iter_str" name="max_iter_str"
+                    value="{{ form_data.max_iter_str|default:'100' }}" min="1" step="1" required>
+            </div>
+            <input type="submit" value="Calcular">
+        </form>
+
+        {% if erro_input %}
+        <div class="result error">
+            <h3>Erro na Entrada de Dados:</h3>
+            <p>{{ erro_input }}</p>
+        </div>
+        {% endif %}
+
+        {% if erro_sympy %}
+        <div class="result error">
+            <h3>Erro na Expressão da Função:</h3>
+            <p>{{ erro_sympy }}</p>
+        </div>
+        {% endif %}
+
+        {% if resultado %}
+        <div
+            class="result {% if resultado.raiz is not None and not erro_input and not erro_sympy %}success{% elif not erro_input and not erro_sympy %}error{% endif %}">
+            <h3>Resultado do Cálculo:</h3>
+            {% if resultado.raiz is not None %}
+            <p><strong>Raiz Encontrada:</strong> <code>{{ resultado.raiz|stringformat:".10f" }}</code></p>
+            <p><strong>f(raiz):</strong> <code>{{ resultado.f_na_raiz|stringformat:".10e" }}</code></p>
+            {% if resultado.erro_calculado is not None %}
+            <p><strong>Erro relativo:</strong> <code>{{ resultado.erro_calculado|stringformat:".10e" }}</code></p>
+            {% endif %}
+            {% else %}
+            <p><strong>Não foi possível encontrar a raiz.</strong></p>
+            {% endif %}
+            <p><strong>Iterações:</strong> {{ resultado.iteracoes }}</p>
+            <p><strong>Mensagem:</strong> {{ resultado.mensagem }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Easter Egg fora do container -->
+    <img src="{% load static %}{% static 'bixin-barbie.png' %}" alt="Easter Egg" class="easter-egg-creature"
+        id="easterEgg" onerror="console.error('Erro ao carregar imagem do easter egg')">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const submitButton = document.querySelector('input[type="submit"]');
+            const easterEgg = document.getElementById('easterEgg');
+
+            console.log('Easter Egg element:', easterEgg);
+            console.log('Submit button:', submitButton);
+
+            if (submitButton) {
+                submitButton.addEventListener('click', function (e) {
+                    console.log('Button clicked! Triggering easter egg...');
+
+                    // Ativar animação estilo "Toasty!" do Mortal Kombat
+                    easterEgg.classList.remove('active');
+                    void easterEgg.offsetWidth; // Force reflow
+                    easterEgg.classList.add('active');
+
+                    console.log('Easter egg class added:', easterEgg.className);
+
+                    // A página vai recarregar, mas o usuário verá o início da animação
+                });
+            } else {
+                console.error('Botão de submit não encontrado!');
+            }
+
+            // Salvar no sessionStorage que o easter egg deve aparecer
+            if (submitButton) {
+                submitButton.addEventListener('click', function () {
+                    sessionStorage.setItem('showEasterEgg', 'true');
+                });
+            }
+
+            // Verificar se deve mostrar o easter egg ao carregar a página (após submit)
+            if (sessionStorage.getItem('showEasterEgg') === 'true') {
+                sessionStorage.removeItem('showEasterEgg');
+                console.log('Mostrando easter egg após reload...');
+
+                setTimeout(function () {
+                    easterEgg.classList.add('active');
+                    setTimeout(function () {
+                        easterEgg.classList.remove('active');
+                    }, 800);
+                }, 100);
+            }
+        });
+    </script>
+</body>
+
+</html>

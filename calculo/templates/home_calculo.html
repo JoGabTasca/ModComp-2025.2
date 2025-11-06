@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>💖 Calculadoras Barbie - Métodos Numéricos</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/home_calculo.css' %}">
+</head>
+
+<body>
+    <!-- Corações flutuantes -->
+    <div class="floating-hearts">
+        <div class="floating-heart">💖</div>
+        <div class="floating-heart">💕</div>
+        <div class="floating-heart">💗</div>
+        <div class="floating-heart">💝</div>
+        <div class="floating-heart">💖</div>
+        <div class="floating-heart">💕</div>
+        <div class="floating-heart">💗</div>
+        <div class="floating-heart">💝</div>
+        <div class="floating-heart">💖</div>
+        <div class="floating-heart">💕</div>
+    </div>
+
+    <!-- Estrelinhas cintilantes -->
+    <div class="sparkles">
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+    </div>
+
+    <div class="container">
+        <img src="{% static 'barbie-logo-png-12.png' %}" alt="Barbie Logo" class="barbie-logo">
+
+        <h1>✨ Métodos Numéricos ✨</h1>
+        <p class=" subtitle"> Escolha sua calculadora glamourosa favorita! </p>
+
+        <a href="{% url 'bissecao_calculator' %}" class="metodo-btn">
+            <span class="emoji">💖</span>Método da Bisseção
+        </a>
+
+        <a href="{% url 'newton_calculator' %}" class="metodo-btn">
+            <span class="emoji">💎</span>Newton-Raphson
+        </a>
+
+        <a href="{% url 'gauss_calculator' %}" class="metodo-btn">
+            <span class="emoji">💚</span>Eliminação de Gauss
+        </a>
+
+    </div>
+</body>
+
+</html>

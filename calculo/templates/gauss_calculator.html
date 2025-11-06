@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>💖 Calculadora Eliminação de Gauss</title>
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap">
+    <link rel="stylesheet" href="{% static 'css/gauss_calculator.css' %}">
+</head>
+
+<body>
+    <div class="floating-hearts">
+    </div>
+
+    <nav>
+        <a href="{% url 'home_calculo' %}">Início</a>
+        <a href="{% url 'bissecao_calculator' %}">Bisseção</a>
+        <a href="{% url 'newton_calculator' %}">Newton-Raphson</a>
+        <a href="{% url 'gauss_calculator' %}">Eliminação de Gauss</a>
+    </nav>
+
+    <div class="container">
+        {% load static %}
+        <img src="{% static 'Barbie_Logo.svg.png' %}" alt="Barbie" class="barbie-logo-small">
+        <h1>Calculadora Método da Eliminação de Gauss</h1>
+
+        <div class="info-box">
+            <p><strong>O que este cálculo faz:</strong> resolve um sistema linear <code>A·x = b</code> usando eliminação
+                de Gauss.</p>
+            <p><strong>Como preencher:</strong></p>
+            <ul>
+                <li><strong>Tamanho da matriz</strong>: informe o tamanho esperado, ex.: <code>3x3</code>.</li>
+                <li><strong>Matriz dos coeficientes (A)</strong>: insira os coeficientes linha a linha. Formatos aceitos
+                    (exemplos):</li>
+            </ul>
+            <pre>
+[1, 2, -1], [2, 3, 3], [1, -1, 2]
+ou
+1 2 -1; 2 3 3; 1 -1 2
+            </pre>
+            <ul>
+                <li><strong>Vetor dos termos independentes (b)</strong>: coloque os valores na mesma ordem, ex.:
+                    <code>[8, 13, 3]</code> ou <code>8,13,3</code>.
+                </li>
+            </ul>
+            <p><strong>Dica</strong>: verifique que o número de colunas em A corresponde ao tamanho do sistema e que o
+                vetor b tem o mesmo número de entradas.</p>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div>
+                <label for="tamanho_matriz">Tamanho da Matriz (ex: 3x3)</label>
+                <input type="text" id="tamanho_matriz" name="tamanho_matriz"
+                    value="{{ form_data.tamanho_matriz|default:'3x3' }}" required>
+            </div>
+            <div>
+                <label for="matriz">Matriz dos Coeficientes:</label>
+                <input type="text" id="matriz" name="matriz" value="{{ form_data.matriz|default:'' }}" required>
+            </div>
+            <div>
+                <label for="vetor">Vetor dos Termos Independentes:</label>
+                <input type="text" id="vetor" name="vetor" value="{{ form_data.vetor|default:'' }}" required>
+            </div>
+            <input type="submit" value="Calcular">
+
+            {% if sugerir_svd or sugerir_mq %}
+            <div style="grid-column: 1 / -1; text-align: center; margin-top: -10px;">
+                <button type="submit" name="metodo_alternativo" value="{% if sugerir_svd %}svd{% else %}mq{% endif %}"
+                    class="alternative-button">
+                    Tentar com {% if sugerir_svd %}SVD{% else %}Mínimos Quadrados{% endif %}
+                </button>
+            </div>
+            {% endif %}
+        </form>
+
+        {% if erro_input %}
+        <div class="result error">
+            <h3>Erro na Entrada de Dados:</h3>
+            <pre>{{ erro_input }}</pre>
+        </div>
+        {% endif %}
+
+        {% if solucao %}
+        <div class="result success">
+            <h3>Solução Encontrada:</h3>
+
+            <p class="solucao-final">x = [
+                {% for val in solucao %}
+                {{ val|floatformat:6 }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+                ]</p>
+
+            <hr>
+            <pre>{{ mensagem }}</pre>
+        </div>
+        {% endif %}
+
+        {% if mensagem and not solucao and not erro_input %}
+        <div class="result error">
+            <h3>Mensagem do Sistema:</h3>
+            <pre>{{ mensagem }}</pre>
+        </div>
+        {% endif %}
+
+    </div>
+
+    {% load static %}
+    <img src="{% static 'bixin-barbie.png' %}" alt="Easter Egg" class="easter-egg-creature" id="easterEgg"
+        onerror="console.error('Erro ao carregar imagem do easter egg')">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const submitButton = document.querySelector('input[type="submit"]');
+            const easterEgg = document.getElementById('easterEgg');
+
+            if (submitButton) {
+                submitButton.addEventListener('click', function (e) {
+                    sessionStorage.setItem('showEasterEgg', 'true');
+                });
+            }
+
+            if (sessionStorage.getItem('showEasterEgg') === 'true') {
+                sessionStorage.removeItem('showEasterEgg');
+
+                setTimeout(function () {
+                    if (easterEgg) {
+                        easterEgg.classList.add('active');
+                        setTimeout(function () {
+                            easterEgg.classList.remove('active');
+                        }, 800);
+                    }
+                }, 100);
+            }
+
+            const altButtons = document.querySelectorAll('.alternative-button');
+            altButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    sessionStorage.setItem('showEasterEgg', 'true');
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
